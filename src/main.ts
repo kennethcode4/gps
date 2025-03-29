@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { CONNECTION_MQTT } from './helpers/constants';
+import { MQTT } from './helpers/constants';
 
 async function microservices(app: INestApplication<any>) {
   app.connectMicroservice({
@@ -16,7 +16,7 @@ async function microservices(app: INestApplication<any>) {
   app.connectMicroservice({
     transport: Transport.MQTT,
     options: {
-      url: `mqtt://${CONNECTION_MQTT.BROKER.HOST}:${CONNECTION_MQTT.BROKER.PORT}`,
+      url: `mqtt://${MQTT.BROKER.HOST}:${MQTT.BROKER.PORT}`,
     }
   })
 

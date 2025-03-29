@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, MqttContext } from '@nestjs/microservices';
-import { CONNECTION_MQTT, TOPICS } from 'src/helpers/constants';
+
+import { MQTT } from 'src/helpers/constants';
 
 @Injectable()
 export class MqttSubscriberService {
   constructor(
-    @Inject(CONNECTION_MQTT.BROKER.CLIENT_ID)
+    @Inject(MQTT.BROKER.CLIENT_ID)
     private readonly client: ClientProxy,
   ) {}
 
@@ -17,9 +18,6 @@ export class MqttSubscriberService {
       console.log('Error: ', error);
       return false;
     }
-
-    // await this.client.send(topic, data).subscribe();
-    // return true;
   }
 
   getData(context: MqttContext, payload: any) {
