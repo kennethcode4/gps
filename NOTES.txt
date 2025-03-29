@@ -1,0 +1,9 @@
+Programar el módulo GPS con Arduino para que lea las coordenadas y las envíe periódicamente usando MQTT.
+
+1-Configurar un broker MQTT (como Mosquitto o EMQX) que reciba los datos desde los dispositivos instalados en los Forklifts.
+
+2-Implementar un Gateway en NestJS que se suscriba a esos topics y almacene las ubicaciones en MongoDB.
+
+3-Actualizar el frontend Angular en tiempo real usando WebSockets para mostrar las posiciones en un mapa (ej. con Leaflet o Google Maps).
+
+Si además usas una estructura de topics bien pensada (ej: forklift/{id}/location), tendrás un sistema escalable y mantenible.
