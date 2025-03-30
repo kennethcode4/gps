@@ -4,6 +4,7 @@ import { GpsService } from './gps.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Gps, GpsSchema } from './schemas/gps.schema';
+import { GpsWsGateway } from './gps-ws.gateway';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { Gps, GpsSchema } from './schemas/gps.schema';
     ]),
   ],
   controllers: [GpsController],
-  providers: [GpsService],
+  providers: [GpsService, GpsWsGateway],
   exports: [GpsService],
 })
 export class GpsModule {}

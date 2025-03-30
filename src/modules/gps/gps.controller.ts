@@ -1,15 +1,24 @@
 import { Controller, Get } from '@nestjs/common';
 import { PATTERNS } from './gps.constants';
-import { Ctx, EventPattern, MessagePattern, MqttContext, Payload } from '@nestjs/microservices';
+import {
+  Ctx,
+  EventPattern,
+  MessagePattern,
+  MqttContext,
+  Payload,
+} from '@nestjs/microservices';
 
 import { GpsService } from './gps.service';
 import { MQTT } from 'src/helpers/constants';
 import { GpsDto } from './dto/gps-dto';
+import { GpsWsGateway } from './gps-ws.gateway';
 
 @Controller('/api/v1/microservice-b2')
 export class GpsController {
-  
-  constructor(private readonly gpsService: GpsService) {}
+  constructor(
+    private readonly gpsService: GpsService,
+    private readonly gpsWsGateway: GpsWsGateway,
+  ) {}
 
   // Send message to Message Pattern B1
   @Get('send-message')
@@ -20,7 +29,10 @@ export class GpsController {
   // Receive message from Message Pattern B1
   @MessagePattern(PATTERNS.MESSAGE.SEND_MESSAGE)
   receiveMessageFromMessagePatternB1(data: { message: string }) {
-    console.info('[MessagePattern] Message received from Message Pattern B1', data);
+    console.info(
+      '[MessagePattern] Message received from Message Pattern B1',
+      data,
+    );
     this.gpsService.sendEventPattern('Event emmited in B2');
     return true;
   }
@@ -35,13 +47,7 @@ export class GpsController {
   // Listen to the topic ccg-iot/gps/+/location from MQTT Broker
   @EventPattern(MQTT.TOPICS.CCG_GPS)
   listenGpsData(@Ctx() context: MqttContext, @Payload() payload: GpsDto) {
-    const topic = context.getTopic(); // ccg-iot/gps/[THING_ID]/location
-    const thingId = topic.split('/')[2]; // "01"
-
-    // console.info('Payload from topic:', topic);
-    // console.info('Thing ID:', thingId);
-    // console.info('Message:', payload);
-
     this.gpsService.saveGpsData(payload);
+    this.gpsWsGateway.emitLocation(payload);
   }
 }
