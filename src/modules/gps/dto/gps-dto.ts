@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, IsDateString, IsOptional } from 'class-validator';
 
 export class GpsDto {
   @IsNotEmpty()
@@ -24,4 +24,8 @@ export class GpsDto {
   @IsNotEmpty()
   @IsString()
   type: string;
+
+  @IsOptional()
+  @IsDateString()
+  date?: Date;
 }

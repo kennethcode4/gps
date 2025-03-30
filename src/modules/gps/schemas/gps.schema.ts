@@ -25,7 +25,7 @@ export enum Type {
   PERSON = 'person',
 }
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: false })
 export class Gps extends Document {
   @Prop({ required: true, index: true })
   @IsString()
@@ -64,6 +64,10 @@ export class Gps extends Document {
   @IsEnum(Direction)
   @IsOptional()
   direction: Direction;
+
+  @Prop({ required: true, default: Date.now })
+  @IsDateString()
+  date: Date;
 }
 
 export const GpsSchema = SchemaFactory.createForClass(Gps);
