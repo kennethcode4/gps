@@ -34,25 +34,21 @@ export class Gps extends Document {
 
   @Prop({ required: true })
   @IsNumber()
-  @IsPositive()
   @IsNotEmpty()
   lat: number;
 
   @Prop({ required: true })
   @IsNumber()
-  @IsPositive()
   @IsNotEmpty()
   lng: number;
 
   @Prop({ required: true })
   @IsNumber()
-  @IsPositive()
   @IsNotEmpty()
   altitude: number;
 
   @Prop({ required: true })
   @IsNumber()
-  @IsPositive()
   @IsNotEmpty()
   speed: number;
 

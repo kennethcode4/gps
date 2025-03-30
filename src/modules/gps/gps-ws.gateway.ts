@@ -17,6 +17,5 @@ export class GpsWsGateway {
 
   emitLocation(payload: GpsDto) {
     this.server.emit('gps-location-update', payload);
-    console.log('emitLocation', payload);
   }
 }
