@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { GpsModule } from './modules/gps/gps.module';
 import { MqttSubscriberModule } from './modules/mqtt-subscriber/mqtt-subscriber.module';
 import { MqttPublisherModule } from './modules/mqtt-publisher/mqtt-publisher.module';
@@ -20,20 +20,21 @@ import configMongo from 'config/config-mongo';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
+        const logger = new Logger('MongoDB', { timestamp: true });
         const connectionString = `${configService.get('mongo.uri')}${configService.get('mongo.database')}${configService.get('mongo.params')}`;
         await mongoose.createConnection(connectionString).asPromise();
         return {
           connectionFactory: (connection) => {
             if (connection.readyState === 1) {
-              console.log('Database connected successfully.');
+              logger.log('Database connected successfully.');
             }
 
             connection.on('disconnected', () => {
-              console.log('Database disconnected.');
+              logger.log('Database disconnected.');
             });
 
             connection.on('error', (error: any) =>
-              console.log('Database connection failed! ', error),
+              logger.error('Database connection failed! ', error),
             );
             return connection;
           },

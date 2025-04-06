@@ -5,10 +5,13 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Gps, GpsSchema } from './schemas/gps.schema';
 import { GpsWsGateway } from './gps-ws.gateway';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Gps.name, schema: GpsSchema }]),
+    MongooseModule.forFeature([
+      { name: Gps.name, schema: GpsSchema }
+    ]),
     ClientsModule.register([
       {
         name: 'BACKEND_MICROSERVICE_CLIENT',
@@ -19,6 +22,10 @@ import { GpsWsGateway } from './gps-ws.gateway';
         },
       },
     ]),
+    CacheModule.register({
+      ttl: 1000 * 60 * 60 * 24, // 1 dia
+      max: 1000, // máximo 1000 items en caché
+    }),
   ],
   controllers: [GpsController],
   providers: [GpsService, GpsWsGateway],

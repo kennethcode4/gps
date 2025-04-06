@@ -14,18 +14,26 @@ export class GpsDto {
   lng: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  altitude: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  speed: number;
-
-  @IsNotEmpty()
   @IsString()
   type: string;
 
   @IsOptional()
+  @IsNumber()
+  altitude: number;
+
+  @IsOptional()
+  @IsNumber()
+  speed: number;
+
+  @IsOptional()
+  @IsString()
+  direction: string;
+
+  @IsOptional()
   @IsDateString()
   date?: Date;
+
+  @IsOptional()
+  @IsString()
+  alias?: string;
 }

@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Logger, Param, Query } from '@nestjs/common';
 import { PATTERNS } from './gps.constants';
 import {
   Ctx,
@@ -13,8 +13,10 @@ import { MQTT } from 'src/helpers/constants';
 import { GpsDto } from './dto/gps-dto';
 import { GpsWsGateway } from './gps-ws.gateway';
 
-@Controller('/api/v1/microservice-b2')
+@Controller('/api/v1/gps')
 export class GpsController {
+  private readonly logger = new Logger(GpsService.name);
+
   constructor(
     private readonly gpsService: GpsService,
     private readonly gpsWsGateway: GpsWsGateway,
@@ -47,7 +49,41 @@ export class GpsController {
   // Listen to the topic ccg-iot/gps/+/location from MQTT Broker
   @EventPattern(MQTT.TOPICS.CCG_GPS)
   listenGpsData(@Ctx() context: MqttContext, @Payload() payload: GpsDto) {
+    console.log(payload);
+    if (!this.isValidGpsData(payload)) {
+      this.logger.error('Invalid GPS data from MQTT', payload);
+      return;
+    }
     this.gpsService.saveGpsData(payload);
     this.gpsWsGateway.emitLocation(payload);
+  }
+
+  // Validate GPS data
+  private isValidGpsData(data: GpsDto): boolean {
+    if (data.lat < -90 || data.lat > 90) return false;
+    if (data.lng < -180 || data.lng > 180) return false;
+    return true;
+  }
+
+  @Get('/route-history/:thingId')
+  async getLocationHistory(
+    @Param('thingId') thingId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string
+  ) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    const locations = await this.gpsService.getLocationHistory(thingId, start, end);
+    return locations.map(location => ({
+      thingId: location.thingId,
+      lat: location.lat,
+      lng: location.lng,
+      altitude: location.altitude,
+      speed: location.speed,
+      type: location.type,
+      date: location.date,
+      direction: location.direction
+    }));
   }
 }
