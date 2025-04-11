@@ -3,7 +3,7 @@ import { MqttPublisherService } from './mqtt-publisher.service';
 import { MqttDataDto } from './dto/mqtt-data-dto';
 import { MQTT } from 'src/helpers/constants';
 
-@Controller('api/v1/mqtt-publisher')
+@Controller('/mqtt-publisher')
 export class MqttPublisherController {
 
     constructor(private readonly mqttPublisherService: MqttPublisherService) {}

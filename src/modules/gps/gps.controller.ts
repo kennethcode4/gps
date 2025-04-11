@@ -13,7 +13,7 @@ import { MQTT } from 'src/helpers/constants';
 import { GpsDto } from './dto/gps-dto';
 import { GpsWsGateway } from './gps-ws.gateway';
 
-@Controller('/api/v1/gps')
+@Controller('/gps')
 export class GpsController {
   private readonly logger = new Logger(GpsService.name);
 
